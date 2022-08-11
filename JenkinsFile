@@ -1,10 +1,10 @@
-def artifactname = "rome-rp1-app.jar"
+def artifactname = "rome-rp1-app.jar-${env.BRANCH_NAME}"
 def repoName = "rome-rp1-app-repo"
 def pipelineName = "balu_scripted_pipeline"
 def semanticVersion = "${env.BUILD_NUMBER}.0.0"
 def packageName = "rome-rp1-package_${env.BUILD_NUMBER}"
 def version = "${env.BUILD_NUMBER}.0"
-def pkgName = "rome-rp1-package"
+def pkgName = "rome-rp1-package-${env.BRANCH_NAME}"
 
 pipeline {
   agent any
