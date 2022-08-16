@@ -31,9 +31,11 @@ pipeline {
 
 
 
-          snDevOpsArtifact artifactsPayload: '{"artifacts":[{"name": "sa-web.jar", "version": "1.90", "repositoryName": "services-1031"}, {"name": "sa-db.jar", "version": "1.3.2", "repositoryName": "services-1032"}], "branchName": "Scratch/PR_Epic1"}'
-	  snDevOpsPackage artifactsPayload: '{"artifacts":[{"name": "sa-web.jar", "version": "1.90", "repositoryName": "services-1031"}, {"name": "sa-db.jar", "version": "1.3.2", "repositoryName": "services-1032"}], "branchName": "Scratch/PR_Epic1"}', name: 'packageName1'
-
+         // snDevOpsArtifact artifactsPayload: '{"artifacts":[{"name": "sa-web.jar", "version": "1.90", "repositoryName": "services-1031"}, {"name": "sa-db.jar", "version": "1.3.2", "repositoryName": "services-1032"}], "branchName": "Scratch/PR_Epic1"}'
+	 // snDevOpsPackage artifactsPayload: '{"artifacts":[{"name": "sa-web.jar", "version": "1.90", "repositoryName": "services-1031"}, {"name": "sa-db.jar", "version": "1.3.2", "repositoryName": "services-1032"}], "branchName": "Scratch/PR_Epic1"}', name: 'packageName1'
+	
+	snDevOpsArtifact(artifactsPayload: """{"artifacts": [{"name": "${artifactname}", "version": "1.${env.BUILD_NUMBER}","semanticVersion": "1.${env.BUILD_NUMBER}.0","repositoryName": "${repoName}"}],"branchName":"Scratch/PR_Epic1"}""")
+        snDevOpsPackage(name: "${pkgName}-${env.BUILD_NUMBER}", artifactsPayload: """{"artifacts":[{"name": "${artifactname}", "version": "1.${env.BUILD_NUMBER}", "repositoryName": "${repoName}"}], "branchName":"Scratch/PR_Epic1"}""")
            }
            post {
              always {
