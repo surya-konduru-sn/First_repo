@@ -1,10 +1,10 @@
-def artifactname = "133testing-app.jar"
+def artifactname = "133testing-app.jar_${env.BRANCH_NAME}_${env.BUILD_NUMBER}"
 def repoName = "rome-rp1-app-repo"
 def pipelineName = "balu_scripted_pipeline"
 def semanticVersion = "${env.BUILD_NUMBER}.0.0"
 def packageName = "rome-rp1-package_${env.BUILD_NUMBER}"
 def version = "${env.BUILD_NUMBER}.0"
-def pkgName = "rome-rp1-package"
+def pkgName = "rome-rp1-package_${env.BRANCH_NAME}_${env.BUILD_NUMBER}"
 
 pipeline {
   agent any
@@ -44,8 +44,8 @@ pipeline {
                  steps {
                    
                     echo 'Deploying the change....'
-                    snDevOpsArtifact(artifactsPayload: """{"artifacts": [{"name": "${artifactname}", "version": "1.${env.BUILD_NUMBER}","semanticVersion": "1.${env.BUILD_NUMBER}.0","repositoryName": "${repoName}"}],"branchName":"master"}""")
-          	    snDevOpsPackage(name: "${pkgName}-${env.BUILD_NUMBER}", artifactsPayload: """{"artifacts":[{"name": "${artifactname}", "version": "1.${env.BUILD_NUMBER}", "repositoryName": "${repoName}"}], "branchName":"master"}""")
+                    snDevOpsArtifact(artifactsPayload: """{"artifacts": [{"name": "${artifactname}", "version": "1.${env.BUILD_NUMBER}","semanticVersion": "1.${env.BUILD_NUMBER}.0","repositoryName": "${repoName}"}],"branchName":"${env.BRANCH_NAME}"}""")
+          	    snDevOpsPackage(name: "${pkgName}-${env.BUILD_NUMBER}", artifactsPayload: """{"artifacts":[{"name": "${artifactname}", "version": "1.${env.BUILD_NUMBER}", "repositoryName": "${repoName}"}], "branchName":"${env.BRANCH_NAME}"}""")
                  }
       }
 
