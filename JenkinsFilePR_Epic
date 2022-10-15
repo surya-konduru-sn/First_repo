@@ -1,10 +1,10 @@
-def artifactname = "rome-rp1-app.jar-${env.BRANCH_NAME}"
+def artifactname = "133testing-app.jar"
 def repoName = "rome-rp1-app-repo"
 def pipelineName = "balu_scripted_pipeline"
 def semanticVersion = "${env.BUILD_NUMBER}.0.0"
 def packageName = "rome-rp1-package_${env.BUILD_NUMBER}"
 def version = "${env.BUILD_NUMBER}.0"
-def pkgName = "rome-rp1-package-${env.BRANCH_NAME}"
+def pkgName = "rome-rp1-package"
 
 pipeline {
   agent any
@@ -15,14 +15,19 @@ pipeline {
 	 SCANNER_HOME = tool 'sonarScanner'
 	}  
   stages {
-       stage('Build') {
+       stage('Build &1') {
            steps {
               
-              sh 'mvn -B -DskipTests clean compile'
-
+              //sh 'mvn -B -DskipTests clean compile'
+			sh 'mvn test'
+           }
+           post {
+             always {
+                junit "**/target/surefire-reports/*.xml"
+             }
            }
        }
-       stage('Test') {
+       stage('Test &2') {
            steps {
               
               sh 'mvn test'
@@ -33,37 +38,27 @@ pipeline {
              }
            }
        }
-      stage('Deploy') {
+
+
+      stage('Artifacts&Packages &4') {
                  steps {
-                    
-		    snDevOpsArtifact(artifactsPayload: """{"artifacts": [{"name": "${artifactname}", "version": "1.${env.BUILD_NUMBER}","semanticVersion": "1.${env.BUILD_NUMBER}.0","repositoryName": "${repoName}"}],"branchName":"master"}""")
-           	    snDevOpsPackage(name: "${pkgName}-${env.BUILD_NUMBER}", artifactsPayload: """{"artifacts":[{"name": "${artifactname}", "version": "1.${env.BUILD_NUMBER}", "repositoryName": "${repoName}"}], "branchName":"master"}""")
-		    
+                   
                     echo 'Deploying the change....'
-                    snDevOpsChange(ignoreErrors:false)
-
-                    //sonarSummaries()
-
-                    
-                    
+                    snDevOpsArtifact(artifactsPayload: """{"artifacts": [{"name": "${artifactname}", "version": "1.${env.BUILD_NUMBER}","semanticVersion": "1.${env.BUILD_NUMBER}.0","repositoryName": "${repoName}"}],"branchName":"master"}""")
+          	    snDevOpsPackage(name: "${pkgName}-${env.BUILD_NUMBER}", artifactsPayload: """{"artifacts":[{"name": "${artifactname}", "version": "1.${env.BUILD_NUMBER}", "repositoryName": "${repoName}"}], "branchName":"master"}""")
                  }
       }
 
+      stage('Deploy &3') {
+                 steps {
+                    
+                    echo 'Deploying the change....'
+                    snDevOpsChange(ignoreErrors:false)
+ 
+        
+                 }
+      }   
 
  }
  
 }
-
-def sonarSummaries() {
-
-   //withSonarQubeEnv('Sonar_Cloud') {
-       //sh '${SCANNER_HOME}/bin/sonar-scanner -Dproject.settings=${SCANNER_HOME}/conf/qa-sonar-scanner-cloud.properties'
-   
-	//}
-	
-    withSonarQubeEnv('sonarQube_local') {
-       	sh '${SCANNER_HOME}/bin/sonar-scanner -Dproject.settings=${SCANNER_HOME}/conf/qa-sonar-scanner.properties'
-   		// sh '${SCANNER_HOME}/bin/sonar-scanner -Dproject.settings=${SCANNER_HOME}/conf/sonar-scanner.properties'
-	}
-	
-} // end of def sonarsummaries
