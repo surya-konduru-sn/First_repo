@@ -42,7 +42,7 @@ pipeline {
                     echo 'Deploying the change....'
                     snDevOpsChange(ignoreErrors:false)
 
-                    sonarSummaries()
+                    //sonarSummaries()
 
                     
                     
