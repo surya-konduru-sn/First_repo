@@ -40,7 +40,7 @@ pipeline {
        }
 
 
-      stage('Artifacts&Packages &4') {
+      stage('Artifacts&Packages &3') {
                  steps {
                    
                     echo 'Deploying the change....'
@@ -49,7 +49,7 @@ pipeline {
                  }
       }
 
-      stage('Deploy &3') {
+      stage('Deploy &4') {
                  steps {
                     
                     echo 'Deploying the change....'
