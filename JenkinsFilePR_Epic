@@ -27,17 +27,17 @@ pipeline {
              }
            }
        }
-      stage('Artifacts&Packages &2') {
+
+      stage('Artifacts&Packages &3') {
                  steps {
                    
                     echo 'Deploying the change....'
                     snDevOpsArtifact(artifactsPayload: """{"artifacts": [{"name": "${artifactname}", "version": "1.${env.BUILD_NUMBER}","semanticVersion": "1.${env.BUILD_NUMBER}.0","repositoryName": "${repoName}"}],"branchName":"${env.BRANCH_NAME}"}""")
           	    snDevOpsPackage(name: "${pkgName}-${env.BUILD_NUMBER}", artifactsPayload: """{"artifacts":[{"name": "${artifactname}", "version": "1.${env.BUILD_NUMBER}", "repositoryName": "${repoName}"}], "branchName":"${env.BRANCH_NAME}"}""")
-	}
-		 
+                 }
       }
 
-      stage('Deploy &3') {
+      stage('Deploy &4') {
                  steps {
                     
                     echo 'Deploying the change....'
