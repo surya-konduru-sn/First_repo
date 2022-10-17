@@ -27,18 +27,6 @@ pipeline {
              }
            }
        }
-       stage('Test &2') {
-           steps {
-              
-              sh 'mvn test'
-           }
-           post {
-             always {
-                junit "**/target/surefire-reports/*.xml"
-             }
-           }
-       }
-
 
       stage('Artifacts&Packages &3') {
                  steps {
