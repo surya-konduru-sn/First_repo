@@ -33,11 +33,6 @@ pipeline {
                     echo 'Deploying the change....'
                     snDevOpsArtifact(artifactsPayload: """{"artifacts": [{"name": "${artifactname}", "version": "1.${env.BUILD_NUMBER}","semanticVersion": "1.${env.BUILD_NUMBER}.0","repositoryName": "${repoName}"}],"branchName":"${env.BRANCH_NAME}"}""")
           	    snDevOpsPackage(name: "${pkgName}-${env.BUILD_NUMBER}", artifactsPayload: """{"artifacts":[{"name": "${artifactname}", "version": "1.${env.BUILD_NUMBER}", "repositoryName": "${repoName}"}], "branchName":"${env.BRANCH_NAME}"}""")
-		    
-		   withSonarQubeEnv('sonarQube_local') {
-			   sh '${SCANNER_HOME}/bin/sonar-scanner -Dproject.settings=${SCANNER_HOME}/conf/qa-sonar-scanner.properties'
-		       
-        		}
 	}
 		 
       }
