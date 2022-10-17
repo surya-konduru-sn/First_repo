@@ -27,23 +27,7 @@ pipeline {
              }
            }
        }
-       stage('Test &2') {
-           steps {
-              
-              sh 'mvn test'
-           }
-           post {
-             always {
-                junit "**/target/surefire-reports/*.xml"
-             }
-           }
-       }
-
-
-      stage('Artifacts&Packages &3') {
-       		environment {
-	    		 	SCANNER_HOME = tool 'sonarScanner'
-	  		    }
+      stage('Artifacts&Packages &2') {
                  steps {
                    
                     echo 'Deploying the change....'
@@ -58,7 +42,7 @@ pipeline {
 		 
       }
 
-      stage('Deploy &4') {
+      stage('Deploy &3') {
                  steps {
                     
                     echo 'Deploying the change....'
