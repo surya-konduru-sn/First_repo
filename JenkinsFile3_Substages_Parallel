@@ -15,6 +15,16 @@ pipeline {
 				    		 SCANNER_HOME = tool 'sonarScanner'
 				  		}
 			           steps {
+				   
+				    steps {
+
+					sh 'mvn test'
+         				  }
+           				post {
+           			  	always {
+              			  		junit "**/target/surefire-reports/*.xml"
+            				 }
+           				}
 			              
 			              echo "build 1.1"
 			              //snDevOpsChange()
@@ -23,10 +33,10 @@ pipeline {
 						       //sh '${SCANNER_HOME}/bin/sonar-scanner -Dproject.settings=${SCANNER_HOME}/conf/qa-sonar-scanner-cloud.properties'
 					       
 			        		//}
-			        		//withSonarQubeEnv('sonarQube_local') {
-			       				//sh '${SCANNER_HOME}/bin/sonar-scanner -Dproject.settings=${SCANNER_HOME}/conf/qa-sonar-scanner.properties'
+			        		withSonarQubeEnv('sonarQube_local') {
+			       				sh '${SCANNER_HOME}/bin/sonar-scanner -Dproject.settings=${SCANNER_HOME}/conf/qa-sonar-scanner.properties'
 		       
-        					//}
+        					}
 				       
 			           }
 	                }
@@ -38,6 +48,11 @@ pipeline {
 						  		}
 					           steps {
 					              
+						      
+						       
+						      snDevOpsArtifact(artifactsPayload: """{"artifacts": [{"name": "${artifactname}", "version": "1.${env.BUILD_NUMBER}","semanticVersion": "1.${env.BUILD_NUMBER}.0","repositoryName": "${repoName}"}],"branchName":"${env.BRANCH_NAME}"}""")
+          	  				      snDevOpsPackage(name: "${pkgName}-${env.BUILD_NUMBER}", artifactsPayload: """{"artifacts":[{"name": "${artifactname}", "version": "1.${env.BUILD_NUMBER}", "repositoryName": "${repoName}"}], "branchName":"${env.BRANCH_NAME}"}""")
+             
 					            //  snDevOpsChange()
 					               echo "build 1.2.3"
 
