@@ -17,7 +17,7 @@ pipeline {
 			           steps {
 			              
 			              echo "build 1.1"
-			              snDevOpsChange()
+			              //snDevOpsChange()
 			               
 			               //withSonarQubeEnv('Sonar_Cloud') {
 						       //sh '${SCANNER_HOME}/bin/sonar-scanner -Dproject.settings=${SCANNER_HOME}/conf/qa-sonar-scanner-cloud.properties'
@@ -38,7 +38,7 @@ pipeline {
 						  		}
 					           steps {
 					              
-					              snDevOpsChange()
+					            //  snDevOpsChange()
 					               echo "build 1.2.3"
 
 						        	//withSonarQubeEnv('sonarQube_local') {
@@ -53,7 +53,7 @@ pipeline {
 	                            steps {
 	                                
 	                                echo 'Build1.2.4'
-	                                snDevOpsChange()
+	                                //snDevOpsChange()
 	                                
 	                            }
 	                        }
@@ -68,7 +68,7 @@ pipeline {
 	                    steps {
 	                    	
 	                         echo 'Test1.1'
-	                         snDevOpsChange()
+	                        // snDevOpsChange()
 	                    }
 	                    post {
 	                        success {
