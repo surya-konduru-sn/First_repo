@@ -24,7 +24,7 @@ pipeline {
            steps {
               snDevOpsStep()
               echo 'Deploying the change....${changeRequestId}'
-              snDevOpsChange()
+              //snDevOpsChange()
 	      script {
 	      	changeRequestId = snDevOpsGetChangeNumber()
 	      }
