@@ -23,11 +23,11 @@ pipeline {
       stage('Deploy') {
            steps {
               snDevOpsStep()
-              echo 'Deploying the change....${changeRequestId}'
+              echo 'Deploying the change....$changeRequestId'
               //snDevOpsChange()
 	      script {
 	      	changeRequestId = snDevOpsGetChangeNumber()
-                echo 'Inside Script Block => Deploying the change....${changeRequestId}'
+                echo 'Inside Script Block => Deploying the change....$changeRequestId'
 	      }
               echo 'Deploying the change....${changeRequestId}'
            }
