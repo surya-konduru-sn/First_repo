@@ -8,27 +8,27 @@ def pkgName = "sp-boot-package"
 
 pipeline {
   agent any
-  tools {
+  /*tools {
        maven 'Maven'
-   }
+   }*/
   stages {
        stage('Build') {
            steps {
               snDevOpsStep()
-              sh 'mvn -B -DskipTests clean compile'
+              //sh 'mvn -B -DskipTests clean compile'
 
            }
        }
        stage('Test') {
            steps {
               snDevOpsStep()
-              sh 'mvn test'
+              //sh 'mvn test'
            }
-           post {
+           /*post {
              always {
                 junit "**/target/surefire-reports/*.xml"
              }
-           }
+           }*/
        }
       stage('Deploy') {
                  steps {
@@ -38,7 +38,7 @@ pipeline {
                  }
       }
 
-     stage('PublishArtifacts') { 
+     /*stage('PublishArtifacts') { 
 	            steps {
 	            	snDevOpsStep (enabled:true)
 	               //snDevOpsStep (stepSysId:'47828d591b9c60106951da86cc4bcbfa', ignoreErrors:true)
@@ -62,7 +62,7 @@ pipeline {
             snDevOpsPackage(name: "${pkgName}-${env.BUILD_NUMBER}", artifactsPayload: """{"artifacts":[{"name": "${artifactname}", "version": "1.${env.BUILD_NUMBER}", "repositoryName": "${repoName}"}], "branchName":"master"}""")
         
          }
- 	}
+ 	}*/
  }
  
 }
