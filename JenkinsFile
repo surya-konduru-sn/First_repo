@@ -35,7 +35,7 @@ pipeline {
       	steps {
 		
 	      script {
-	      	changeRequestId = snDevOpsGetChangeNumber pipelineDetails: '{"pipeline_name":"Surya-AdvCR","build_number":"35","stage_name":"Change"}'
+	      	changeRequestId = snDevOpsGetChangeNumber pipelineDetails: '{"pipeline_name":"surya-multibranch","build_number":"2","stage_name":"Deploy"}'
 	      }
               echo 'Deploying the change....${changeRequestId}'
 	}
