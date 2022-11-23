@@ -24,12 +24,13 @@ pipeline {
            steps {
               snDevOpsStep()
               echo 'Deploying the change....$changeRequestId'
+              echo "Deploying the change....${changeRequestId}"	      
               snDevOpsChange changeRequestDetails: '{ "attributes": { "short_description": "pkgName => ${pkgName}", "description": "changeRequestId => ${changeRequestId}"}}'
 	      script {
 	      	changeRequestId = snDevOpsGetChangeNumber()
-                echo 'Inside Script Block => Deploying the change....$changeRequestId'
+                echo "Inside Script Block => Deploying the change....${changeRequestId}"
 	      }
-              echo 'Deploying the change...."${changeRequestId}", env.BUILD_NUMBER => ${env.BUILD_NUMBER}'
+              echo "Deploying the change....${changeRequestId}, env.BUILD_NUMBER => ${env.BUILD_NUMBER}"
            }
       }
       stage('TestChange') {
@@ -37,9 +38,9 @@ pipeline {
 		
 	      script {
 	      	changeRequestId = snDevOpsGetChangeNumber pipelineDetails: '{"pipeline_name":"surya-multibranch","build_number":"2","stage_name":"Deploy"}'
-		echo 'Inside Script Block => Test the change....with double quotes "${changeRequestId}"'
+		echo "Inside Script Block => Test the change....with double quotes ${changeRequestId}"
 	      }
-              echo 'Deploying the change....${changeRequestId}'
+              echo "Deploying the change....${changeRequestId}"
 	}
       }
 
