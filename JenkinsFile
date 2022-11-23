@@ -24,7 +24,7 @@ pipeline {
            steps {
               snDevOpsStep()
               echo 'Deploying the change....$changeRequestId'
-              snDevOpsChange changeRequestDetails: '{ "attributes": { "short_description": "Test description"}}'
+              snDevOpsChange changeRequestDetails: '{ "attributes": { "short_description": "pkgName => $pkgName", "description": "changeRequestId => $changeRequestId"}}'
 	      script {
 	      	changeRequestId = snDevOpsGetChangeNumber()
                 echo 'Inside Script Block => Deploying the change....$changeRequestId'
