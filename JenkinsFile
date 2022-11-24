@@ -1,48 +1,49 @@
+def artifactname = "sp-boot-app.jar"
+def repoName = "sp-boot-app-repo"
+def pipelineName = "devops_vk_pipeline"
+def semanticVersion = "${env.BUILD_NUMBER}.0.0"
+def packageName = "spboot-package_${env.BUILD_NUMBER}"
+def version = "${env.BUILD_NUMBER}.0"
+def pkgName = "sp-boot-package"
+def changeRequestId = "testId"
 pipeline {
-   agent any
-   tools {
-        maven 'Maven'
+  agent any
+  stages {
+       stage('Build') {
+           steps {
+              snDevOpsStep()
 
-    }
-   stages {
-        stage('Build') {
-            steps {
-               //snDevOpsStep ()
-               snDevOpsStep (enabled:true)
-               //snDevOpsStep (stepSysId:'b075606b1b671410f23cdb9cdc4bcb2e', ignoreErrors:true)
-               // snDevOpsStep (ignoreErrors:true) /* working 1.18 */
-               // snDevOpsStep (stepSysId:'b075606b1b671410f23cdb9cdc4bcb2e', ignoreErrors:true)
-               sh 'mvn -B -DskipTests clean compile'
-		sleep 10
-            }
-        }
-        stage('Test') { 
-            steps {
-               snDevOpsStep ()
+           }
+       }
+       stage('Test') {
+           steps {
+              snDevOpsStep()
+           }
+       }
+      stage('Deploy') {
+           steps {
+              snDevOpsStep()
+              echo 'Deploying the change....$changeRequestId'
+              echo "Deploying the change....${changeRequestId}"	      
+              snDevOpsChange changeRequestDetails: '{ "attributes": { "short_description": "pkgName => ${pkgName}", "description": "changeRequestId => ${changeRequestId}"}}'
+	      script {
+	      	changeRequestId = snDevOpsGetChangeNumber()
+                echo "Inside Script Block => Deploying the change....${changeRequestId}"
+	      }
+              echo "Deploying the change....${changeRequestId}, env.BUILD_NUMBER => ${env.BUILD_NUMBER}"
+           }
+      }
+      stage('TestChange') {
+      	steps {
+		
+	      script {
+	      	changeRequestId = snDevOpsGetChangeNumber changeDetails: '{"pipeline_name":"Surya-AdvCR","build_number":"35","stage_name":"Change"}'
+		echo "Inside Script Block => Test the change....with double quotes ${changeRequestId}"
+	      }
+              echo "Deploying the change....${changeRequestId}"
+	}
+      }
 
-                sh 'mvn test'
-                sleep 10
-            }
-            post {
-           		always {
-                 junit '**/target/surefire-reports/*.xml'
-            	} 
-            }
-        }
-
-	stage('Deploy') { 
-	            steps {
-	               snDevOpsStep ()
-	               echo 'Deploying....'
-                	sleep 3
-	               snDevOpsChange()
-	               //sh 'mvn clean install package'
-
-	            }
-	            
-	        }
-
-
-      
   }
+
 }
