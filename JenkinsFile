@@ -8,61 +8,26 @@ def pkgName = "sp-boot-package"
 
 pipeline {
   agent any
-  tools {
-       maven 'Maven'
-   }
   stages {
        stage('Build') {
            steps {
               snDevOpsStep()
-              sh 'mvn -B -DskipTests clean compile'
 
            }
        }
        stage('Test') {
            steps {
               snDevOpsStep()
-              sh 'mvn test'
-           }
-           post {
-             always {
-                junit "**/target/surefire-reports/*.xml"
-             }
            }
        }
       stage('Deploy') {
-                 steps {
-                    snDevOpsStep()
-                    echo 'Deploying the change....'
-                    snDevOpsChange()
-                 }
+           steps {
+              snDevOpsStep()
+              echo 'Deploying the change....'
+              snDevOpsChange()
+           }
       }
 
-     stage('PublishArtifacts') { 
-	            steps {
-	            	snDevOpsStep (enabled:true)
-	               //snDevOpsStep (stepSysId:'47828d591b9c60106951da86cc4bcbfa', ignoreErrors:true)
-	               
-	               snDevOpsChange()
-	               echo 'Publishing Artifacts....'
-                	sleep 3
-					//snDevOpsArtifact(artifactsPayload:"""{"artifacts": [{"name": "${artifactname}-${env.BUILD_NUMBER}","semanticVersion": "${semanticVersion}","repositoryName": "${repoName}"}],"stageName": "PublishArtifacts"}""")            
-	                snDevOpsArtifact(artifactsPayload: """{"artifacts": [{"name": "${artifactname}", "version": "1.${env.BUILD_NUMBER}","semanticVersion": "1.${env.BUILD_NUMBER}.0","repositoryName": "${repoName}"}],"branchName":"master"}""")
-	           
-	            }
-	            
-	        }
+  }
 
-		stage('PublishPackage') {
-         steps {
-         	snDevOpsStep (enabled:true)
-            //snDevOpsStep (stepSysId:'5b9281591b9c60106951da86cc4bcbfe', ignoreErrors:true)
-            echo 'Publishing Package....'
-         	//snDevOpsPackage(name: "${pkgName}-${env.BUILD_NUMBER}", artifactsPayload: """{"artifacts":[{"name": "${artifactname}", "repositoryName": "${repoName}"}], "branchName":"master"}""")
-            snDevOpsPackage(name: "${pkgName}-${env.BUILD_NUMBER}", artifactsPayload: """{"artifacts":[{"name": "${artifactname}", "version": "1.${env.BUILD_NUMBER}", "repositoryName": "${repoName}"}], "branchName":"master"}""")
-        
-         }
- 	}
- }
- 
 }

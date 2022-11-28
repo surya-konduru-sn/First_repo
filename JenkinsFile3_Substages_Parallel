@@ -51,7 +51,7 @@ pipeline {
 	                                snDevOpsStep()
 	                                echo 'Build1.2.4'
 	                                snDevOpsChange()
-	                                sh 'sleep 100'
+	                                //sh 'sleep 1'
 	                            }
 	                        }
 	                    }
@@ -78,7 +78,7 @@ pipeline {
 	                        snDevOpsStep()
 	                        snDevOpsChange()
 	                        echo 'Test1.2'
-	                        sh 'sleep 100'
+	                        sh 'sleep 1'
 	                    }
 	                    post {
 	                        success {
