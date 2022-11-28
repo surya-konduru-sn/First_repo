@@ -1,65 +1,49 @@
-def artifactname = "rome-rp1-app.jar"
-def repoName = "rome-rp1-app-repo"
-def pipelineName = "balu_scripted_pipeline"
+def artifactname = "sp-boot-app.jar"
+def repoName = "sp-boot-app-repo"
+def pipelineName = "devops_vk_pipeline"
 def semanticVersion = "${env.BUILD_NUMBER}.0.0"
-def packageName = "rome-rp1-package_${env.BUILD_NUMBER}"
+def packageName = "spboot-package_${env.BUILD_NUMBER}"
 def version = "${env.BUILD_NUMBER}.0"
-def pkgName = "rome-rp1-package"
-
+def pkgName = "sp-boot-package"
+def changeRequestId = "testId"
 pipeline {
   agent any
-  tools {
-       maven 'Maven'
-   }
-   environment {
-	 SCANNER_HOME = tool 'sonarScanner'
-	}  
   stages {
        stage('Build') {
            steps {
-              
-              sh 'mvn -B -DskipTests clean compile'
+              snDevOpsStep()
 
            }
        }
        stage('Test') {
            steps {
-              
-              sh 'mvn test'
-           }
-           post {
-             always {
-                junit "**/target/surefire-reports/*.xml"
-             }
+              snDevOpsStep()
            }
        }
       stage('Deploy') {
-                 steps {
-                    
-                    echo 'Deploying the change....'
-                    snDevOpsChange(ignoreErrors:false)
-                    sonarSummaries()
-                    snDevOpsArtifact(artifactsPayload: """{"artifacts": [{"name": "${artifactname}", "version": "1.${env.BUILD_NUMBER}","semanticVersion": "1.${env.BUILD_NUMBER}.0","repositoryName": "${repoName}"}],"branchName":"master"}""")
-           			snDevOpsPackage(name: "${pkgName}-${env.BUILD_NUMBER}", artifactsPayload: """{"artifacts":[{"name": "${artifactname}", "version": "1.${env.BUILD_NUMBER}", "repositoryName": "${repoName}"}], "branchName":"master"}""")
-                    
-                 }
+           steps {
+              snDevOpsStep()
+              echo 'Deploying the change....$changeRequestId'
+              echo "Deploying the change....${changeRequestId}"	      
+              snDevOpsChange changeRequestDetails: '{ "attributes": { "short_description": "pkgName => ${pkgName}", "description": "changeRequestId => ${changeRequestId}"}}'
+	      script {
+	      	changeRequestId = snDevOpsGetChangeNumber()
+                echo "Inside Script Block => Deploying the change....${changeRequestId}"
+	      }
+              echo "Deploying the change....${changeRequestId}, env.BUILD_NUMBER => ${env.BUILD_NUMBER}"
+           }
+      }
+      stage('TestChange') {
+      	steps {
+		
+	      script {
+	      	changeRequestId = snDevOpsGetChangeNumber changeDetails: '{"pipeline_name":"surya-multibranch","build_number":"2","stage_name":"Deploy"}'
+		echo "Inside Script Block => Test the change....with double quotes ${changeRequestId}"
+	      }
+              echo "Deploying the change....${changeRequestId}"
+	}
       }
 
+  }
 
- }
- 
 }
-
-def sonarSummaries() {
-
-   //withSonarQubeEnv('Sonar_Cloud') {
-       //sh '${SCANNER_HOME}/bin/sonar-scanner -Dproject.settings=${SCANNER_HOME}/conf/qa-sonar-scanner-cloud.properties'
-   
-	//}
-	
-    withSonarQubeEnv('sonarQube_local') {
-       	sh '${SCANNER_HOME}/bin/sonar-scanner -Dproject.settings=${SCANNER_HOME}/conf/qa-sonar-scanner.properties'
-   		// sh '${SCANNER_HOME}/bin/sonar-scanner -Dproject.settings=${SCANNER_HOME}/conf/sonar-scanner.properties'
-	}
-	
-} // end of def sonarsummaries

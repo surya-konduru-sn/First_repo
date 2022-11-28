@@ -1,0 +1,52 @@
+def artifactname = "133testing-app.jar_${env.BRANCH_NAME}_${env.BUILD_NUMBER}"
+def repoName = "rome-rp1-app-repo"
+def pipelineName = "balu_scripted_pipeline"
+def semanticVersion = "${env.BUILD_NUMBER}.0.0"
+def packageName = "rome-rp1-package_${env.BUILD_NUMBER}"
+def version = "${env.BUILD_NUMBER}.0"
+def pkgName = "rome-rp1-package_${env.BRANCH_NAME}_${env.BUILD_NUMBER}"
+
+pipeline {
+  agent any
+  tools {
+       maven 'Maven'
+   }
+   environment {
+	 SCANNER_HOME = tool 'sonarScanner'
+	}  
+  stages {
+       stage('Build &1') {
+           steps {
+              
+              //sh 'mvn -B -DskipTests clean compile'
+			sh 'mvn test'
+           }
+           post {
+             always {
+                junit "**/target/surefire-reports/*.xml"
+             }
+           }
+       }
+
+      stage('Artifacts&Packages &3') {
+                 steps {
+                   
+                    echo 'Deploying the change....'
+                    snDevOpsArtifact(artifactsPayload: """{"artifacts": [{"name": "${artifactname}", "version": "1.${env.BUILD_NUMBER}","semanticVersion": "1.${env.BUILD_NUMBER}.0","repositoryName": "${repoName}"}],"branchName":"${env.BRANCH_NAME}"}""")
+          	    snDevOpsPackage(name: "${pkgName}-${env.BUILD_NUMBER}", artifactsPayload: """{"artifacts":[{"name": "${artifactname}", "version": "1.${env.BUILD_NUMBER}", "repositoryName": "${repoName}"}], "branchName":"${env.BRANCH_NAME}"}""")
+                 }
+      }
+
+      stage('Deploy &4') {
+                 steps {
+                    
+                    echo 'Deploying the change....'
+                    snDevOpsChange(ignoreErrors:false)
+ 
+        
+                 }
+      }   
+
+ }
+ 
+}
